@@ -1,0 +1,15 @@
+services:
+  mariadb:
+    image: mariadb
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_DATABASE=db
+      - MYSQL_USER=user
+      - MYSQL_PASSWORD=user
+    ports:
+      - 3306:3306
+
+  adminer:
+    image: adminer
+    ports:
+      - 9090:8080
