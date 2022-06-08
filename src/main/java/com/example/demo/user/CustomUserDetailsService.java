@@ -6,12 +6,12 @@ import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import com.example.demo.entity.Role;
 import com.example.demo.entity.User;
@@ -20,11 +20,17 @@ import com.example.demo.repository.UserRepository;
 
 public class CustomUserDetailsService implements UserDetailsService {
 
-    @Autowired
     private UserRepository userRepository;
 
-    @Autowired
     private RoleRepository roleRepository;
+
+    private PasswordEncoder passwordEncoder;
+
+    public CustomUserDetailsService(UserRepository userRepository, RoleRepository roleRepository, PasswordEncoder passwordEncoder) {
+        this.userRepository = userRepository;
+        this.roleRepository = roleRepository;
+        this.passwordEncoder = passwordEncoder;
+    }
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -47,7 +53,7 @@ public class CustomUserDetailsService implements UserDetailsService {
     private User buildUser(String username, String password, String... roleNames) {
         var user = new User();
         user.setName(username);
-        user.setPassword(password);
+        user.setPassword(passwordEncoder.encode(password));
         user.setEnabled(true);
 
         var roles = new ArrayList<Role>();
