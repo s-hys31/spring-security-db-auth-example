@@ -1,4 +1,4 @@
-package com.example.demo.user.service;
+package com.example.demo.user;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -9,10 +9,10 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import com.example.demo.repository.UserRepository;
-import com.example.demo.user.CustomUserDetails;
 
-public class CustomUserDetailsService implements UserDetailsService {
+import com.example.demo.repository.UserRepository;
+
+public class CustomUserDetailsManager implements UserDetailsService {
 
     @Autowired
     private UserRepository userRepository;
@@ -20,7 +20,7 @@ public class CustomUserDetailsService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         if (username == null || username.isBlank()) {
-            throw new UsernameNotFoundException("Username is empty.");
+            throw new UsernameNotFoundException(username);
         }
 
         var user = userRepository.findByName(username);
