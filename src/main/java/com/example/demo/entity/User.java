@@ -34,8 +34,11 @@ public class User {
     @Column(name = "credentials_expired_date")
     private Date credentialsExpiredDate;
 
+    @Column(nullable = false)
+    private boolean enabled;
+
     public User(int id, List<Role> roles, String password, String name, Date expiredDate, Date lockedAt,
-            Date credentialsExpiredDate) {
+            Date credentialsExpiredDate, boolean enabled) {
         this.id = id;
         this.roles = roles;
         this.password = password;
@@ -43,6 +46,7 @@ public class User {
         this.expiredDate = expiredDate;
         this.lockedAt = lockedAt;
         this.credentialsExpiredDate = credentialsExpiredDate;
+        this.enabled = enabled;
     }
 
     public User() {
@@ -102,5 +106,13 @@ public class User {
 
     public void setCredentialsExpiredDate(Date credentialsExpiredDate) {
         this.credentialsExpiredDate = credentialsExpiredDate;
+    }
+
+    public boolean isEnabled() {
+        return enabled;
+    }
+
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
     }
 }
