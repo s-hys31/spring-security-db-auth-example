@@ -16,12 +16,12 @@ public class Role {
     private int id;
 
     @Column(nullable = false, unique = true)
-    private int name;
+    private String name;
 
     @ManyToMany
     private List<Permission> permissions;
 
-    public Role(int id, int name, List<Permission> permissions) {
+    public Role(int id, String name, List<Permission> permissions) {
         this.id = id;
         this.name = name;
         this.permissions = permissions;
@@ -38,11 +38,11 @@ public class Role {
         this.id = id;
     }
 
-    public int getName() {
+    public String getName() {
         return name;
     }
 
-    public void setName(int name) {
+    public void setName(String name) {
         this.name = name;
     }
 
