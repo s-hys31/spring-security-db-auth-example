@@ -14,7 +14,6 @@ import javax.persistence.ManyToMany;
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
     private int id;
 
     @ManyToMany
@@ -24,29 +23,29 @@ public class User {
     private String password;
 
     @Column(nullable = false, unique = true)
-    private String username;
+    private String name;
 
-    @Column(nullable = true)
+    @Column(name = "expired_date")
     private Date expiredDate;
 
-    @Column(nullable = true)
+    @Column(name = "locked_at")
     private Date lockedAt;
 
-    @Column(nullable = true)
+    @Column(name = "credentials_expired_date")
     private Date credentialsExpiredDate;
 
-    public User() {
-    }
-
-    public User(int id, List<Role> roles, String password, String username, Date expiredDate, Date lockedAt,
+    public User(int id, List<Role> roles, String password, String name, Date expiredDate, Date lockedAt,
             Date credentialsExpiredDate) {
         this.id = id;
         this.roles = roles;
         this.password = password;
-        this.username = username;
+        this.name = name;
         this.expiredDate = expiredDate;
         this.lockedAt = lockedAt;
         this.credentialsExpiredDate = credentialsExpiredDate;
+    }
+
+    public User() {
     }
 
     public int getId() {
@@ -73,12 +72,12 @@ public class User {
         this.password = password;
     }
 
-    public String getUsername() {
-        return username;
+    public String getName() {
+        return name;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public Date getExpiredDate() {
