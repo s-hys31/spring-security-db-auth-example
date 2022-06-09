@@ -1,6 +1,5 @@
 package com.example.demo.config;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -16,22 +15,17 @@ import com.example.demo.user.CustomUserDetailsService;
 @EnableWebSecurity
 public class SecurityConfig {
 
-    @Autowired
-    private UserRepository userRepository;
-    @Autowired
-    private RoleRepository roleRepository;
+    @Bean
+    public UserDetailsService userDetailsService(UserRepository userRepository, RoleRepository roleRepository) {
+        var userDetailsService = new CustomUserDetailsService(userRepository, roleRepository, passwordEncoder());
+        userDetailsService.registerUser("user", "password");
+
+        return userDetailsService;
+    }
 
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
-    }
-
-    @Bean
-    public UserDetailsService userDetailsService() {
-        var service = new CustomUserDetailsService(userRepository, roleRepository, passwordEncoder());
-        service.registerUser("user", "password");
-
-        return service;
     }
 
     @Bean
