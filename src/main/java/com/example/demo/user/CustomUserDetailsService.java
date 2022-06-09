@@ -1,6 +1,7 @@
 package com.example.demo.user;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -12,12 +13,14 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Component;
 
 import com.example.demo.entity.Role;
 import com.example.demo.entity.User;
 import com.example.demo.repository.RoleRepository;
 import com.example.demo.repository.UserRepository;
 
+@Component
 public class CustomUserDetailsService implements UserDetailsService {
 
     private UserRepository userRepository;
@@ -26,7 +29,8 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     private PasswordEncoder passwordEncoder;
 
-    public CustomUserDetailsService(UserRepository userRepository, RoleRepository roleRepository, PasswordEncoder passwordEncoder) {
+    public CustomUserDetailsService(UserRepository userRepository, RoleRepository roleRepository,
+            PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
         this.passwordEncoder = passwordEncoder;
@@ -42,7 +46,7 @@ public class CustomUserDetailsService implements UserDetailsService {
         List<GrantedAuthority> authorities = user.getRoles().stream().flatMap(role -> role.getPermissions().stream())
                 .map(permission -> new SimpleGrantedAuthority(permission.getName())).collect(Collectors.toList());
 
-        return new CustomUserDetails(user, authorities);
+        return buildUserDetails(user, authorities);
     }
 
     @Transactional
@@ -64,6 +68,48 @@ public class CustomUserDetailsService implements UserDetailsService {
         user.setRoles(roles);
 
         return user;
+    }
+
+    private UserDetails buildUserDetails(User user, List<GrantedAuthority> authorities) {
+        return new org.springframework.security.core.userdetails.User(user.getName(), user.getPassword(),
+                user.isEnabled(), isAccountNonExpired(user), isCredentialsNonExpired(user), isAccountNonLocked(user),
+                authorities);
+    }
+
+    private boolean isAccountNonExpired(User user) {
+        var expired = user.getExpiredDate();
+        if (expired == null) {
+            return true;
+        }
+
+        var now = new Date();
+        if (now.compareTo(expired) == -1) {
+            return true;
+        }
+
+        return false;
+    }
+
+    private boolean isCredentialsNonExpired(User user) {
+        var expired = user.getCredentialsExpiredDate();
+        if (expired == null) {
+            return true;
+        }
+
+        var now = new Date();
+        if (now.compareTo(expired) == -1) {
+            return true;
+        }
+
+        return false;
+    }
+
+    private boolean isAccountNonLocked(User user) {
+        if (user.getLockedAt() == null) {
+            return true;
+        }
+
+        return false;
     }
 
 }
