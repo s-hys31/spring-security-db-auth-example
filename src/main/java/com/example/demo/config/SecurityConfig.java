@@ -1,5 +1,6 @@
 package com.example.demo.config;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -16,9 +17,12 @@ import com.example.demo.user.CustomUserDetailsService;
 public class SecurityConfig {
 
     @Bean
-    public UserDetailsService userDetailsService(UserRepository userRepository, RoleRepository roleRepository) {
+    public UserDetailsService userDetailsService(UserRepository userRepository, RoleRepository roleRepository,
+            @Value("${spring.security.user.name}") String defaultUsername,
+            @Value("${spring.security.user.password}") String defaultPassword,
+            @Value("${spring.security.user.roles}") String... roles) {
         var userDetailsService = new CustomUserDetailsService(userRepository, roleRepository, passwordEncoder());
-        userDetailsService.registerUser("user", "password");
+        userDetailsService.registerUser(defaultUsername, defaultPassword, roles);
 
         return userDetailsService;
     }
