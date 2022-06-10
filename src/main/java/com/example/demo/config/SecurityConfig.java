@@ -36,7 +36,8 @@ public class SecurityConfig {
     public SecurityFilterChain formLoginFilterChain(HttpSecurity httpSecurity) throws Exception {
         httpSecurity.formLogin(login -> login.loginProcessingUrl("/login").defaultSuccessUrl("/hello")
                 .failureUrl("/login?error").permitAll())
-                .authorizeHttpRequests(auth -> auth.anyRequest().authenticated());
+                .authorizeHttpRequests(
+                        auth -> auth.mvcMatchers("/hello").hasAuthority("SHOW_HELLO").anyRequest().authenticated());
 
         return httpSecurity.build();
     }
