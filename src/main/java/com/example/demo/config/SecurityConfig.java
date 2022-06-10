@@ -20,9 +20,9 @@ public class SecurityConfig {
     public UserDetailsService userDetailsService(UserRepository userRepository, RoleRepository roleRepository,
             @Value("${spring.security.user.name}") String defaultUsername,
             @Value("${spring.security.user.password}") String defaultPassword,
-            @Value("${spring.security.user.roles}") String... roles) {
+            @Value("${spring.security.user.roles}") String... defaultRoles) {
         var userDetailsService = new CustomUserDetailsService(userRepository, roleRepository, passwordEncoder());
-        userDetailsService.registerUser(defaultUsername, defaultPassword, roles);
+        userDetailsService.registerUser(defaultUsername, defaultPassword, defaultRoles);
 
         return userDetailsService;
     }
