@@ -34,7 +34,7 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain formLoginFilterChain(HttpSecurity httpSecurity) throws Exception {
-        httpSecurity.formLogin(login -> login.loginProcessingUrl("/login").defaultSuccessUrl("/")
+        httpSecurity.formLogin(login -> login.loginProcessingUrl("/login").defaultSuccessUrl("/hello")
                 .failureUrl("/login?error").permitAll())
                 .authorizeHttpRequests(auth -> auth.anyRequest().authenticated());
 
