@@ -54,6 +54,12 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     @Transactional
     public void registerUser(String username, String password, String... roles) {
+        username = username.toLowerCase();
+        var user = userRepository.findByName(username.toLowerCase());
+        if (user != null) {
+            return;
+        }
+
         userRepository.save(buildUser(username, password, roles));
     }
 
