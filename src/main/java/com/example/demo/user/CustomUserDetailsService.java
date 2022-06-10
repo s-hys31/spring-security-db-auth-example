@@ -41,7 +41,11 @@ public class CustomUserDetailsService implements UserDetailsService {
             throw new UsernameNotFoundException(username);
         }
 
-        var user = userRepository.findByName(username);
+        var user = userRepository.findByName(username.toLowerCase());
+        if (user == null) {
+            throw new UsernameNotFoundException(username);
+        }
+
         List<GrantedAuthority> authorities = user.getRoles().stream().flatMap(role -> role.getPermissions().stream())
                 .map(permission -> new SimpleGrantedAuthority(permission.getName())).collect(Collectors.toList());
 
@@ -49,8 +53,8 @@ public class CustomUserDetailsService implements UserDetailsService {
     }
 
     @Transactional
-    public void registerUser(String username, String password) {
-        userRepository.save(buildUser(username, password, "USER"));
+    public void registerUser(String username, String password, String... roles) {
+        userRepository.save(buildUser(username, password, roles));
     }
 
     private User buildUser(String username, String password, String... roleNames) {
